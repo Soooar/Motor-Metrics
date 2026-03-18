@@ -21,7 +21,7 @@ Para colocar o projeto funcionando na sua máquina, copie e cole os comandos aba
 
 ```bash
 # 1. Clonar o repositório e entrar na pasta
-git clone [https://github.com/SEU_USUARIO/MotorMetrics.git](https://github.com/SEU_USUARIO/MotorMetrics.git)
+git clone https://github.com/Soooar/Motor-Metrics.git
 cd MotorMetrics
 
 # 2. Criar e ativar o ambiente virtual (Windows)
