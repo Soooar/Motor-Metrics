@@ -31,5 +31,5 @@ Through an ETL/ELT pipeline, the system cross-references prices from real online
 
 1. **Clone the repository:**
 ```bash
-git clone [https://github.com/YOUR_USERNAME/MotorMetrics.git](https://github.com/YOUR_USERNAME/MotorMetrics.git)
+git clone https://github.com/Soooar/Motor-Metrics.git
 cd MotorMetrics
