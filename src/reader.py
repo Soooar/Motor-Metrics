@@ -2,7 +2,6 @@ import sqlite3
 import logging
 import os
 
-# --- Configuração de logging ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
@@ -11,16 +10,16 @@ logger = logging.getLogger(__name__)
 
 DB_PATH = "data/mercado_automotivo.db"
 
-# --- Verifica se o banco existe ---
 if not os.path.exists(DB_PATH):
     logger.error(f"Banco de dados não encontrado em '{DB_PATH}'. Execute o extrator primeiro.")
     exit(1)
 
 logger.info(f"Conectando ao banco de dados em '{DB_PATH}'...")
 
+conexao = None
 try:
     conexao = sqlite3.connect(DB_PATH)
-    conexao.row_factory = sqlite3.Row  # permite acessar colunas por nome
+    conexao.row_factory = sqlite3.Row
     cursor = conexao.cursor()
 
     cursor.execute("SELECT * FROM historico_precos ORDER BY data_coleta DESC")
@@ -39,5 +38,6 @@ except sqlite3.Error as e:
     logger.error(f"Erro ao acessar o banco de dados: {e}")
 
 finally:
-    conexao.close()
-    logger.info("Conexão encerrada.")
+    if conexao:
+        conexao.close()
+        logger.info("Conexão encerrada.")
