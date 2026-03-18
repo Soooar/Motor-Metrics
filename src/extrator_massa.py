@@ -20,7 +20,6 @@ if resposta.status_code == 200:
     conexao = sqlite3.connect('data/mercado_automotivo.db')
     cursor = conexao.cursor()
 
-    # UPGRADE DO BANCO: Deletamos a antiga e criamos a nova com mais colunas
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS historico_precos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +37,6 @@ if resposta.status_code == 200:
     
     for card in cards:
         el_titulo = card.find('p', class_='label__neutral')
-        # TENTATIVA 2: Buscando o preço por uma classe mais genérica ou pelo cifrão
         el_preco  = card.find('p', string=re.compile(r'R\$')) 
         el_ano    = card.find('p', class_='label__neutral-variant')
         el_km     = card.find('p', string=re.compile(r'Km'))
@@ -46,7 +44,6 @@ if resposta.status_code == 200:
         if el_titulo:
             titulo = el_titulo.text.strip()
             
-            # Limpeza do Preço mais robusta
             preco_limpo = 0.0
             if el_preco:
                 # Pega só o que é número
