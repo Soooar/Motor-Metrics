@@ -29,7 +29,19 @@ Through an ETL/ELT pipeline, the system cross-references prices from real online
 
 ### Step-by-Step
 
-1. **Clone the repository:**
-```bash
+# 1. Clone the repository and enter the folder
 git clone https://github.com/Soooar/Motor-Metrics.git
 cd MotorMetrics
+
+# 2. Create and activate the virtual environment (Windows)
+python -m venv venv
+./venv/Scripts/activate
+
+# 3. Install all dependencies
+pip install -r requirements.txt
+
+# 4. Run the initial extraction script
+python src/extrator_massa.py
+
+> [!TIP]
+> If you are on Linux or macOS, use `source venv/bin/activate` to activate the environment.
