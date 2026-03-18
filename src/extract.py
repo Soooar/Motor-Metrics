@@ -6,7 +6,6 @@ import logging
 import os
 from datetime import datetime
 
-# --- Configuração de logging profissional ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
@@ -14,16 +13,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 URL = 'https://www.icarros.com.br/ache/listaanuncios.jsp?bid=1&sop=esc_4.1_-rai_50.1_-mar_5.1_-mod_2428|2794.1_-'
-
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/Firefox/120.0'
 }
 
-# --- Garante que a pasta data/ existe ---
 os.makedirs("data", exist_ok=True)
 
 logger.info("Iniciando coleta de dados do iCarros...")
-
 resposta = requests.get(URL, headers=HEADERS)
 
 if resposta.status_code == 200:
@@ -40,7 +36,8 @@ if resposta.status_code == 200:
             preco REAL,
             ano TEXT,
             km TEXT,
-            data_coleta TEXT
+            data_coleta TEXT,
+            UNIQUE(modelo, preco, km, data_coleta)
         )
     ''')
 
@@ -48,6 +45,7 @@ if resposta.status_code == 200:
     logger.info(f"{len(cards)} anúncios encontrados. Iniciando processamento...")
 
     inseridos = 0
+    ignorados = 0
     erros = 0
 
     for i, card in enumerate(cards):
@@ -75,21 +73,25 @@ if resposta.status_code == 200:
             km  = el_km.text.strip()  if el_km  else "0 Km"
 
             cursor.execute('''
-                INSERT INTO historico_precos (modelo, preco, ano, km, data_coleta)
+                INSERT OR IGNORE INTO historico_precos (modelo, preco, ano, km, data_coleta)
                 VALUES (?, ?, ?, ?, ?)
             ''', (titulo, preco_limpo, ano, km, data_hoje))
 
-            logger.info(f"Inserido: {titulo} | {ano} | {km} | R$ {preco_limpo:.2f}")
-            inseridos += 1
+            if cursor.rowcount > 0:
+                logger.info(f"Inserido: {titulo} | {ano} | {km} | R$ {preco_limpo:.2f}")
+                inseridos += 1
+            else:
+                logger.debug(f"Ignorado (duplicata): {titulo} | {km}")
+                ignorados += 1
 
         except Exception as e:
             logger.error(f"Card {i}: erro inesperado — {e}")
             erros += 1
-            continue  # segue para o próximo card sem perder os anteriores
+            continue
 
     conexao.commit()
     conexao.close()
-    logger.info(f"Coleta finalizada. {inseridos} registros inseridos, {erros} erros.")
+    logger.info(f"Coleta finalizada. {inseridos} inseridos · {ignorados} ignorados · {erros} erros.")
 
 else:
     logger.error(f"Falha na requisição HTTP: {resposta.status_code}")
