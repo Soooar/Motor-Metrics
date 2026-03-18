@@ -1,0 +1,34 @@
+# Ambientes Virtuais
+venv/
+.venv/
+env/
+ENV/
+
+# Arquivos de Configuração e Senhas (CRÍTICO)
+.env
+*.pem
+secrets.yml
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Dados Locais (Evita subir gigabytes de dados no git)
+*.csv
+*.json
+*.parquet
+*.db
+*.sqlite3
+data/
+raw_data/
+
+# Arquivos do dbt
+target/
+dbt_packages/
+logs/
+
+# Logs de sistema operacional
+.DS_Store
+Thumbs.db

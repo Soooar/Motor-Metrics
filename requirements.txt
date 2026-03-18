@@ -1,0 +1,19 @@
+# Extração de Dados (Scraping & APIs)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# Processamento de Dados
+pandas>=2.1.0
+
+# Banco de Dados & Conectores
+psycopg2-binary>=2.9.9
+SQLAlchemy>=2.0.0
+
+# Nuvem (AWS)
+boto3>=1.34.0
+
+# Analytics Engineering
+dbt-postgres>=1.7.0
+
+# Segurança e Variáveis de Ambiente
+python-dotenv>=1.0.0
