@@ -21,17 +21,16 @@ if resposta.status_code == 200:
     cursor = conexao.cursor()
 
     # UPGRADE DO BANCO: Deletamos a antiga e criamos a nova com mais colunas
-    cursor.execute("DROP TABLE IF EXISTS historico_precos")
     cursor.execute('''
-        CREATE TABLE historico_precos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            modelo TEXT,
-            preco REAL,
-            ano TEXT,
-            km TEXT,
-            data_coleta TEXT
-        )
-    ''')
+    CREATE TABLE IF NOT EXISTS historico_precos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        modelo TEXT,
+        preco REAL,
+        ano TEXT,
+        km TEXT,
+        data_coleta TEXT
+    )
+''')
 
     data_hoje = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
