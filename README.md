@@ -29,6 +29,7 @@ Through an ETL/ELT pipeline, the system cross-references prices from real online
 
 ### Step-by-Step
 
+```bash
 # 1. Clone the repository and enter the folder
 git clone https://github.com/Soooar/Motor-Metrics.git
 cd MotorMetrics
