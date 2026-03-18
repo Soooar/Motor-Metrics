@@ -1,33 +1,35 @@
-# Automotive Market Scraper 🚗📊
+# MotorMetrics 🚗📊
 
-## 🎯 Objetivo de Negócio
-O mercado automotivo é dinâmico e a desvalorização dos veículos é um dos principais fatores de decisão de compra e venda. Este projeto de **Engenharia de Dados e Analytics Engineering** tem como objetivo monitorar a depreciação real de veículos usados de forma automatizada. 
+*Read this in [Portuguese](README-pt.md).*
 
-Através de um pipeline de ETL/ELT, o sistema cruza os preços praticados em anúncios reais na internet com os valores oficiais de referência da Tabela FIPE. O principal KPI monitorado é a **Taxa de Depreciação (Spread FIPE vs. Mercado)**, permitindo identificar oportunidades de negócio, distorções regionais de preço e o comportamento da curva de desvalorização por ano/modelo.
+## 🎯 Business Objective
+The automotive market is highly dynamic, and vehicle depreciation is a key factor in buying and selling decisions. This **Data Engineering and Analytics Engineering** project aims to automatically monitor the real depreciation of used vehicles.
 
-## 🛠️ Stack Tecnológica
-* **Linguagem:** Python
-* **Extração e Tratamento:** `requests`, `BeautifulSoup`, `pandas`
-* **Armazenamento:** AWS S3 (Data Lake) e PostgreSQL (Data Warehouse)
-* **Transformação (Analytics Engineering):** dbt (Data Build Tool)
-* **Orquestração e CI/CD:** GitHub Actions
-* **Visualização de Dados (BI):** Power BI
+Through an ETL/ELT pipeline, the system cross-references prices from real online listings with official reference values (FIPE Table). The main KPI tracked is the **Depreciation Rate (Market vs. FIPE Spread)**, allowing the identification of business opportunities, regional price distortions, and the depreciation curve behavior by year/model.
 
-## 🏗️ Arquitetura do Projeto
+## 🛠️ Tech Stack
+* **Language:** Python
+* **Extraction & Processing:** `requests`, `BeautifulSoup`, `pandas`
+* **Storage:** AWS S3 (Data Lake) and PostgreSQL (Data Warehouse)
+* **Transformation (Analytics Engineering):** dbt (Data Build Tool)
+* **Orchestration & CI/CD:** GitHub Actions
+* **Data Visualization (BI):** Power BI
+
+## 🏗️ Project Architecture
 
 > [!NOTE]  
-> *(Placeholder)* O diagrama de arquitetura do pipeline (Miro/Draw.io) será inserido aqui ilustrando o fluxo: `Internet -> AWS S3 -> PostgreSQL -> dbt -> Power BI`.
+> *(Placeholder)* The pipeline architecture diagram (Miro/Draw.io) will be inserted here illustrating the flow: `Internet -> AWS S3 -> PostgreSQL -> dbt -> Power BI`.
 
-## 🚀 Como Rodar Localmente
+## 🚀 How to Run Locally
 
-### Pré-requisitos
+### Prerequisites
 * Python 3.10+
-* PostgreSQL rodando localmente (nativo ou via Docker)
-* Conta na AWS (opcional para testes puramente locais, obrigatório para o fluxo do S3)
+* PostgreSQL running locally (native or via Docker)
+* AWS Account (optional for purely local testing, required for S3 flow)
 
-### Passo a Passo
+### Step-by-Step
 
-1. **Clone o repositório:**
+1. **Clone the repository:**
 ```bash
-git clone [https://github.com/SEU_USUARIO/automotive_scraper.git](https://github.com/SEU_USUARIO/automotive_scraper.git)
-cd automotive_scraper
+git clone [https://github.com/YOUR_USERNAME/MotorMetrics.git](https://github.com/YOUR_USERNAME/MotorMetrics.git)
+cd MotorMetrics
