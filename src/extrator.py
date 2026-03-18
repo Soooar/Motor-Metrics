@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-import sqlite3  # O nosso Banco de Dados portátil
-from datetime import datetime  # Para pegar a data e hora de hoje
+import sqlite3
+from datetime import datetime
 
 url = 'https://www.icarros.com.br/comprar/cuiaba-mt/chevrolet/onix/2024/d56545198?pos=3&hfv=false&financiamento=true&_gl=1*1ok4158*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwsdnNBhC4ARIsAA_3heilmJbRr7Jj11mMWh2gisA-G9KgwTxK15pBKtcZhJTPyxmvKgeV7NAaAjvHEALw_wcB&gclsrc=aw.ds&gbraid=0AAAAADpn-tVXUNo1327yAPmucSzK0V3hh'
 
@@ -30,11 +30,11 @@ if resposta.status_code == 200:
         # --- L: LOAD (CARREGANDO NO BANCO DE DADOS) ---
         print("\nAbrindo o Banco de Dados...")
         
-        # 1. O Python cria (ou conecta) a um arquivo chamado 'mercado_automotivo.db'
-        conexao = sqlite3.connect('data/mercado_automotivo.db')
-        cursor = conexao.cursor() # O cursor é quem "digita" os comandos SQL pra gente
         
-        # 2. Criamos a tabela (Olha a sintaxe do MySQL aí!)
+        conexao = sqlite3.connect('data/mercado_automotivo.db')
+        cursor = conexao.cursor() 
+        
+       
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS historico_precos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,17 +44,16 @@ if resposta.status_code == 200:
             )
         ''')
         
-        # 3. Preparamos os dados para inserir
+        # Preparamos os dados para inserir
         modelo_carro = "Onix LT 1.0 2024"
         data_hoje = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-        # 4. Inserimos a linha na tabela
+        # Inserimos a linha na tabela
         cursor.execute('''
             INSERT INTO historico_precos (modelo, preco, data_coleta)
             VALUES (?, ?, ?)
         ''', (modelo_carro, preco_limpo, data_hoje))
         
-        # 5. Salvamos a alteração (commit) e fechamos a porta
         conexao.commit()
         conexao.close()
         
