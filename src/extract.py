@@ -14,6 +14,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+DB_PATH = "data/mercado_automotivo.db"
+
 # --- Configurações ---
 BASE_URL = (
     "https://www.icarros.com.br/ache/listaanuncios.jsp"
@@ -30,7 +32,7 @@ MAX_PAGINAS = 10
 ESPERA_ENTRE_PAGINAS = 2
 
 os.makedirs("data", exist_ok=True)
-engine = create_engine("sqlite:///data/mercado_automotivo.db")
+engine = create_engine(f"sqlite:///{DB_PATH}")
 
 # --- Funções ---
 def raspar_pagina(pagina: int) -> list[dict]:
