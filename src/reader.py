@@ -1,43 +1,91 @@
-import sqlite3
-import logging
-import os
+import pandas as pd
+from sqlalchemy import create_engine
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
-logger = logging.getLogger(__name__)
+from settings import DB_URL, TABELA_CLEAN, get_logger
 
-DB_PATH = "data/mercado_automotivo.db"
+logger = get_logger(__name__)
 
-if not os.path.exists(DB_PATH):
-    logger.error(f"Banco de dados não encontrado em '{DB_PATH}'. Execute o extrator primeiro.")
-    exit(1)
+SEP = "=" * 80
 
-logger.info(f"Conectando ao banco de dados em '{DB_PATH}'...")
 
-conexao = None
-try:
-    conexao = sqlite3.connect(DB_PATH)
-    conexao.row_factory = sqlite3.Row
-    cursor = conexao.cursor()
+# ── Carga ─────────────────────────────────────────────────────────────────────
 
-    cursor.execute("SELECT * FROM historico_precos ORDER BY data_coleta DESC")
-    resultados = cursor.fetchall()
+def carregar_dados(engine) -> pd.DataFrame:
+    """Carrega os dados da tabela limpa."""
+    try:
+        df = pd.read_sql(f"SELECT * FROM {TABELA_CLEAN}", con=engine)
+        logger.info(f"{len(df)} registros carregados de '{TABELA_CLEAN}'.")
+        return df
+    except Exception as e:
+        logger.warning(
+            f"Não foi possível ler '{TABELA_CLEAN}': {e}. "
+            "Execute o clean.py primeiro."
+        )
+        return pd.DataFrame()
 
-    if not resultados:
-        logger.warning("Nenhum registro encontrado na tabela historico_precos.")
-    else:
-        logger.info(f"{len(resultados)} registros encontrados.\n")
-        print(f"{'ID':<5} {'Modelo':<30} {'Preço':>12} {'Ano':<8} {'KM':<15} {'Data Coleta'}")
-        print("-" * 80)
-        for linha in resultados:
-            print(f"{linha['id']:<5} {linha['modelo']:<30} R$ {linha['preco']:>9.2f} {linha['ano']:<8} {linha['km']:<15} {linha['data_coleta']}")
 
-except sqlite3.Error as e:
-    logger.error(f"Erro ao acessar o banco de dados: {e}")
+# ── Análise ───────────────────────────────────────────────────────────────────
 
-finally:
-    if conexao:
-        conexao.close()
-        logger.info("Conexão encerrada.")
+def exibir_resumo_geral(df: pd.DataFrame) -> None:
+    """Métricas agregadas do mercado."""
+    print(f"\n{SEP}")
+    print("  RESUMO ANALÍTICO — Mercado Automotivo")
+    print(SEP)
+    print(f"  Total de anúncios  : {len(df):>10,}")
+    print(f"  Preço médio        : R$ {df['preco'].mean():>12,.2f}")
+    print(f"  Preço mínimo       : R$ {df['preco'].min():>12,.2f}")
+    print(f"  Preço máximo       : R$ {df['preco'].max():>12,.2f}")
+    print(f"  Desvio padrão      : R$ {df['preco'].std():>12,.2f}")
+    print(f"  Ano médio          : {df['ano'].mean():>14.0f}")
+    print(f"  KM médio           : {df['km'].mean():>13,.0f} km")
+    print(f"  Última coleta      : {df['data_coleta'].max():>17}")
+    print(SEP)
+
+
+def exibir_top_caros(df: pd.DataFrame, n: int = 10) -> None:
+    """Lista os N anúncios mais caros."""
+    print(f"\n  Top {n} mais caros:")
+    print("-" * 80)
+    top = df.nlargest(n, "preco")[["modelo", "preco", "ano", "km", "data_coleta"]]
+    print(top.to_string(index=False))
+
+
+def exibir_distribuicao_por_ano(df: pd.DataFrame) -> None:
+    """Preço médio, contagem e KM médio agrupados por ano do veículo."""
+    print(f"\n  Distribuição por ano de fabricação (top 10 mais recentes):")
+    print("-" * 80)
+    resumo = (
+        df.groupby("ano")
+          .agg(
+              qtd=("preco", "count"),
+              preco_medio=("preco", "mean"),
+              km_medio=("km", "mean"),
+          )
+          .sort_values("ano", ascending=False)
+          .head(10)
+    )
+    resumo["preco_medio"] = resumo["preco_medio"].map("R$ {:,.2f}".format)
+    resumo["km_medio"]    = resumo["km_medio"].map("{:,.0f} km".format)
+    resumo.columns        = ["Anúncios", "Preço Médio", "KM Médio"]
+    print(resumo.to_string())
+
+
+# ── Execução principal ────────────────────────────────────────────────────────
+
+def main() -> None:
+    logger.info("=== INICIANDO LEITURA ANALÍTICA ===")
+    engine = create_engine(DB_URL)
+
+    df = carregar_dados(engine)
+    if df.empty:
+        return
+
+    exibir_resumo_geral(df)
+    exibir_top_caros(df, n=10)
+    exibir_distribuicao_por_ano(df)
+
+    logger.info("=== LEITURA CONCLUÍDA ===")
+
+
+if __name__ == "__main__":
+    main()
