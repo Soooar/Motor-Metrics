@@ -37,7 +37,7 @@ python -m venv venv
 pip install -r requirements.txt
 
 # 4. Rodar o robô de extração inicial
-python src/extrator_massa.py
+python src/extract.py
 ```
 
 > [!TIP]
