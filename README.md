@@ -43,7 +43,7 @@ python -m venv venv
 pip install -r requirements.txt
 
 # 4. Run the initial extraction script
-python src/extrator_massa.py
+python src/extract.py
 ```
 
 > [!TIP]
