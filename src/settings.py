@@ -17,8 +17,7 @@ TABELA_RAW   = "historico_precos"
 TABELA_CLEAN = "historico_precos_limpo"
 
 BASE_URL = (
-    "https://www.icarros.com.br/ache/listaanuncios.jsp"
-    "?ord=35&sop=nta_17|44|51.1_-mar_5.1_-mod_2794|2428.1_-esc_4.1_-sta_1.1_&grupoEspecial="
+    "https://www.icarros.com.br/ache/listaanuncios.jsp?bid=1&sop=esc_4.1_-rai_50.1_-kmm_1.1_-"
 )
 HEADERS = {
     "User-Agent": (
@@ -30,7 +29,7 @@ HEADERS = {
 MAX_PAGINAS          = int(os.getenv("MAX_PAGINAS", 10))
 ESPERA_ENTRE_PAGINAS = float(os.getenv("ESPERA_ENTRE_PAGINAS", 2.0))
 
-MODELO_FILTRO = os.getenv("MODELO_FILTRO", "Onix")
+MODELO_FILTRO = os.getenv("MODELO_FILTRO", "")
 
 LOG_LEVEL  = os.getenv("LOG_LEVEL", "INFO")
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
